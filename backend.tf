@@ -1,7 +1,7 @@
 terraform {
   backend "s3" {
     bucket = "devopspfebucket" 
-    key    = "Gitlab/terraform.tfstate"
+    key    = "GitHub/terraform.tfstate"
     region = "us-east-1"
   }
 }
