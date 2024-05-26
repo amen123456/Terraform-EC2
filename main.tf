@@ -32,6 +32,48 @@ resource "aws_security_group" "sg_ec2" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 27017
+    to_port     = 27017
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 2376
+    to_port     = 2377
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 7946
+    to_port     = 7946
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 7946
+    to_port     = 7946
+    protocol    = "udp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 4789
+    to_port     = 4789
+    protocol    = "udp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
   egress {
     from_port   = 0
     to_port     = 0
@@ -54,4 +96,36 @@ resource "aws_instance" "public_instance" {
     volume_size = 30
     volume_type = "gp2"
   }
+
+  user_data = <<-EOF
+              #!/bin/bash
+              # Update the package list and install updates
+              sudo apt-get update -y
+
+              # Install Git
+              sudo apt-get install git -y
+
+              # Install Docker
+              sudo apt-get install apt-transport-https ca-certificates curl software-properties-common -y
+              curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+              sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+              sudo apt-get update -y
+              sudo apt-get install docker-ce -y
+              sudo usermod -aG docker ubuntu
+
+              # Install Apache
+              sudo apt-get install apache2 -y
+
+              # Install Node.js and npm
+              curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
+              sudo apt-get install -y nodejs
+
+              # Install MongoDB
+              sudo apt-get install -y mongodb
+
+              # Start MongoDB service
+              sudo systemctl start mongodb
+              sudo systemctl enable mongodb
+
+              EOF
 }
