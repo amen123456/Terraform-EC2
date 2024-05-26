@@ -64,7 +64,7 @@ resource "aws_instance" "public_instance" {
   }
 
   root_block_device {
-    volume_size = 30
+    volume_size = 150
     volume_type = "gp2"
   }
 
